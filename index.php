@@ -5,6 +5,11 @@
 </head>
 
 <body>
+<br>
+<h2>
+<a href="https://oddam.chrzescijanie.czest.pl">Oddam | </a>
+<h2>
+<hr>
 <h1> Szukaj</h1>
 
 
@@ -22,10 +27,30 @@
 
 include "db_connect.php";
 
+if (isset($_GET['strona'])) {
+    $strona = $_GET['strona'];
+} else {
+    $strona = 1;
+}
 
 
-$sql = "SELECT id, widocznosc, opis, zdjecie, kontakt FROM oddam";
+$sql = "SELECT COUNT(*) FROM oddam WHERE widocznosc = 1";
+$ilosc_lini_zapytanie = $mysqli->query($sql);
+$ilosc_lini = mysqli_fetch_array($ilosc_lini_zapytanie)[0];
+$ilosc_ogloszen_na_strone = 10;
+//var_dump($strona);
+$przesuniecie = (($strona - 1) * $ilosc_ogloszen_na_strone);
+$ilosc_stron = ceil($ilosc_lini / $ilosc_ogloszen_na_strone );
+//var_dump($ilosc_lini);
+//var_dump($przesuniecie);
+//var_dump($ilosc_ogloszen_na_strone);
+
+//$sql = "SELECT id, widocznosc, opis, zdjecie, kontakt FROM oddam WHERE widocznosc = 1";
+$sql = "SELECT id, widocznosc, opis, zdjecie, kontakt FROM oddam WHERE widocznosc = 1 LIMIT ${przesuniecie}, ${ilosc_ogloszen_na_strone}";
+//$sql = "SELECT id, widocznosc, opis, zdjecie, kontakt FROM oddam WHERE widocznosc = 1";
 $result = $mysqli->query($sql);
+
+
 
 if ($result->num_rows > 0)
 {
@@ -45,7 +70,21 @@ if ($result->num_rows > 0)
 	echo "0 results";
 }
 
+
+//Display page selectors
+
+	echo "Strona: ";
+
+	for($i = 1 ; $i <= $ilosc_stron ; $i++)
+	{
+		echo "<a href=\"index.php?strona=$i\">$i </a>";
+	}		
+
 ?>
+<br>
+
+
+
 
 <footer>Andrzej Hochuł, AndrzejHochul@outlook.com, 732190908 <=== w celu edycji, czy zrealizowania ogłoszenia, proszę o kontakt z administracją</footer>
 
