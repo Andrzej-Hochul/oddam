@@ -1,6 +1,9 @@
 <html>
 <body>
 
+<?php
+include "naglowek.php";
+?>
 <form action="" method="POST" enctype="multipart/form-data">
     <input type="hidden" name="MAX_FILE_SIZE" value="300000000" />
   <label for="opis">Opis</label><br>
@@ -10,6 +13,7 @@
     <label for="zdjecie">zdjecie</label><br>
   <input type="file" id="zdjecie" name="zdjecie" ><br>
   <input type="submit" value="Dodaj!">
+  <h3> UWAGA po kliknieciu dodaj czekamy cierpliwie, aż zdjecie sie załaduje na serwer, kiedy gotowe formularz(ta strona) wróci do pierwotnego stanu.</h3>
 </form> 
 
 <?php
@@ -33,8 +37,19 @@ if($ext == "php")
 	
 	die();
 }
-$postzdjecie = base64_encode(file_get_contents(addslashes($image_name)));
 
+
+//Wczytanie zdjecia, zmiana rozmiaru, i wrzucenie do bazdy danych w base64
+$zdjecie_blob = file_get_contents(addslashes($image_name));
+	$zdjecie_lokalnie = $zdjecie_blob;
+
+	$zdjecie_IM = new Imagick();
+	$zdjecie_IM->readimageblob($zdjecie_lokalnie);
+
+	$zdjecie_IM->adaptiveResizeImage(800,800);
+	$zdjecieBase64Encoded = base64_encode($zdjecie_IM);
+	$postzdjecie = $zdjecieBase64Encoded;
+//
 
 $sql = "INSERT INTO oddam (id, opis, zdjecie, kontakt, ip) VALUES (NULL, '$postopis', '$postzdjecie', '$postkontakt', '$sIp' )";
 $result = $mysqli->query($sql);
