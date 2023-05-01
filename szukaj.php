@@ -1,6 +1,14 @@
 <html>
-<body>
+<head>
 
+</head>
+
+
+
+<body>
+<?php
+include "naglowek.php";
+?>
 <?php
 include "db_connect.php";
 $sKluczoweFromGet = $_GET["sKluczowe"];
