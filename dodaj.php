@@ -2,7 +2,7 @@
 <body>
 
 <?php
-include "naglowek.php";
+include "naglowek.php"; 
 ?>
 <form action="" method="POST" enctype="multipart/form-data">
     <input type="hidden" name="MAX_FILE_SIZE" value="300000000" />

@@ -7,6 +7,9 @@
 <?php
 include "naglowek.php";
 ?>
+
+ 
+
 <h1> Szukaj</h1>
 
 
@@ -38,7 +41,7 @@ if (isset($_GET['strona'])) {
     $strona = 1;
 }
 
-
+// Policz ilośc ogloszen nastepnie podziel to na liczbe stron 
 $sql = "SELECT COUNT(*) FROM oddam WHERE widocznosc = 1";
 $ilosc_lini_zapytanie = $mysqli->query($sql);
 $ilosc_lini = mysqli_fetch_array($ilosc_lini_zapytanie)[0];
@@ -46,6 +49,7 @@ $ilosc_ogloszen_na_strone = 10;
 $przesuniecie = (($strona - 1) * $ilosc_ogloszen_na_strone);
 $ilosc_stron = ceil($ilosc_lini / $ilosc_ogloszen_na_strone );
 
+//Pobierz ogloszenia z widocznosc = 1 (widoczne)
 $sql = "SELECT id, widocznosc, opis, zdjecie, kontakt FROM oddam WHERE widocznosc = 1 LIMIT ${przesuniecie}, ${ilosc_ogloszen_na_strone}";
 
 $result = $mysqli->query($sql);
@@ -57,8 +61,13 @@ if ($result->num_rows > 0)
 	while($row = $result->fetch_assoc())
 	{
 		$string = (strlen($row["opis"]) > 13) ? substr($row["opis"],0,10).'...' : $row["opis"];
-		//echo "Numer: " . $row["id"] . "<h2>$string</h2>" . $row["opis"] . '<img width=800 height=800 src="data:image/jpeg;base64,'. $zdjecieBase64Encoded .'"/>' . $row["kontakt"] . "<br>" . "<hr>";
-		echo "Numer: " . $row["id"] . "<h2>$string</h2>" . $row["opis"] . '<img width=800 height=800 src="data:image/jpeg;base64,'. $row['zdjecie'] .'"/>' . $row["kontakt"] . "<br>" . "<hr>";
+		$numer = $row["id"];
+		echo "Numer: " . $numer .  
+		"<form action=\"/oddane.php\"> 
+		<input type=\"hidden\" id=\"numer\" name=\"numer\" value=\"${numer}\"><br>
+		<input type=\"submit\" value=\"Oddane!\">
+		</form>" . 
+"<h2>$string</h2>" . $row["opis"] . '<img width=800 height=800 src="data:image/jpeg;base64,'. $row['zdjecie'] .'"/>' . $row["kontakt"] . "<br>" . "<hr>";
 	}	
 } else 
 {
@@ -81,7 +90,7 @@ if ($result->num_rows > 0)
 
 
 
-<footer>Andrzej Hochuł, AndrzejHochul@outlook.com, 732190908 <=== w celu edycji, czy zrealizowania ogłoszenia, proszę o kontakt z administracją</footer>
+<footer>Andrzej Hochuł, AndrzejHochul@outlook.com, 732190908 <=== w celu edycji ogłoszenia, lub innego zapytania proszę o kontakt</footer>
 
 </body>
 
